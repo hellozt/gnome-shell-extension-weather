@@ -7,9 +7,12 @@
     Copyright (C) 2011
         Timur Kristóf <venemo@msn.com>,
         Elad Alfassa <elad@fedoraproject.org>,
-        Simon Legner <Simon.Legner@gmail.com>
+        Simon Legner <Simon.Legner@gmail.com>,
+	Zachary Tomkoski <hello.zt@gmail.com>
 
-    This file is part of gnome-shell-extension-weather.
+    This file is a modified version of gnome-shell-extension-weather.  I have added a forecast
+    image to the bottom of the file. It's not the cleanest install and hopefully someone
+    has plans that may help improve it to integrate it better. 
 
     gnome-shell-extension-weather is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -44,8 +47,8 @@ const PopupMenu = imports.ui.popupMenu;
 const Soup = imports.gi.Soup;
 const Util = imports.misc.util;
 
-const UNITS = 'c'; // Units for temperature (case sensitive). f: Fahrenheit. c: Celsius
-const YAHOO_ID = 'AUXX0010';
+const UNITS = 'f'; // Units for temperature (case sensitive). f: Fahrenheit. c: Celsius
+const YAHOO_ID = 'USNC0485';
 const WEATHER_URL = 'http://weather.yahooapis.com/forecastjson?u=' + UNITS + '&p=' + YAHOO_ID;
 const FORECAST_URL = 'http://query.yahooapis.com/v1/public/yql?format=json&q=select%20item.forecast%20from%20weather.forecast%20where%20location%3D%22' + YAHOO_ID + '%22%20%20and%20u="' + UNITS + '"';
 
@@ -71,10 +74,13 @@ WeatherMenuButton.prototype = {
         this._weatherInfo = new St.Label({ text: _('...') });
 
         // Panel menu item - the current class
-        let menuAlignment = 0.25;
+        let menuAlignment = 0.67;
         if (St.Widget.get_default_direction() == St.TextDirection.RTL)
             menuAlignment = 1.0 - menuAlignment;
         PanelMenu.Button.prototype._init.call(this, menuAlignment);
+
+
+	
 
         // Putting the panel item together
         let topBox = new St.BoxLayout();        
@@ -88,18 +94,23 @@ WeatherMenuButton.prototype = {
         this._currentWeather = new St.Bin({style_class: 'current'});
         // Future weather
         this._futureWeather = new St.Bin({style_class: 'forecast'/*, x_align: St.Align.START*/});
+	  // Future weather
+        this._menuOptions = new St.Bin({style_class: 'forcast'/*, x_align: St.Align.START*/});
         
         // Separator (copied from Gnome shell's popupMenu.js)
         this._separatorArea = new St.DrawingArea({ style_class: 'popup-separator-menu-item' });
         this._separatorArea.width = 200;
         this._separatorArea.connect('repaint', Lang.bind(this, this._onSeparatorAreaRepaint));
         
+        // Add Radar Image
+        this._logo = new St.Icon({ icon_type: St.IconType.FULLCOLOR, icon_size: 300, icon_name: 'this' });
+ 
         // Putting the popup item together
         let mainBox = new St.BoxLayout({vertical: true});
         mainBox.add_actor(this._currentWeather);
         mainBox.add_actor(this._separatorArea);
         mainBox.add_actor(this._futureWeather);
-        
+	mainBox.add_actor(this._logo)        
         this.menu.addActor(mainBox);
         
         // Items
@@ -176,7 +187,7 @@ WeatherMenuButton.prototype = {
             case 27:/* mostly cloudy (night) */
                 return 'weather-clouds-night';
             case 28:/* mostly cloudy (day) */
-                return 'weather-clouds';
+                return 'weather-few-clouds';
             case 29:/* partly cloudy (night) */
                 return 'weather-few-clouds-night';
             case 30:/* partly cloudy (day) */
@@ -186,9 +197,9 @@ WeatherMenuButton.prototype = {
             case 32:/* sunny */
                 return 'weather-clear';
             case 33:/* fair (night) */
-                return 'weather-clear-night';
-            case 34:/* fair (day) */
                 return 'weather-clear';
+            case 34:/* fair (day) */
+                return 'weather-clear-night';
             case 35:/* mixed rain and hail */
                 return 'weather-snow-rain';
             case 36:/* hot */
@@ -430,4 +441,3 @@ WeatherMenuButton.prototype = {
 function main() {
     this._weatherMenu = new WeatherMenuButton();
 }
-
