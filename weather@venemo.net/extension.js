@@ -441,3 +441,4 @@ WeatherMenuButton.prototype = {
 function main() {
     this._weatherMenu = new WeatherMenuButton();
 }
+

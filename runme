@@ -1,0 +1,2 @@
+java downloader ./ http://image.weather.com/images/maps/forecast/midfcst_600x405.jpg
+convert \\midfcst_600x405.jpg this.png
