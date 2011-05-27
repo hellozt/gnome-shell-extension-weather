@@ -6,7 +6,7 @@ Currently, the weather report including forecast for today and tomorrow is fetch
 
 ### Screenshot
 
-![Screenshot](http://cloud.github.com/downloads/hellozt/gnome-shell-extension-weather/Screenshot-5.png)
+![Screenshot](https://github.com/downloads/hellozt/gnome-shell-extension-weather/Screenshot-5.png)
 
 ### Installation
 
